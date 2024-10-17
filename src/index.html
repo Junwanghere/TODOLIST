@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-50">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO App</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <script src="scripts/todo.js" defer type="module"></script>
+  </head>
+
+  <body class="container px-2 py-4 mx-auto">
+    <div id="app">
+
+      <header class="banner">
+        <h1><a href="#todo" class="taskLink">TODO!</a></h1>
+        <div class="subtitle">
+          <p class="text">Simple and Studid TODO App</p>
+          <p class="hidden text sm:block">
+            proudly powered by
+            <a href="https://5xcampus.com" class="text-link" target="_blank"
+              >5XCAMPUS</a
+            >
+            |
+            <a href="https://todoo.5xcamp.us" class="text-link" target="_blank"
+              >API</a
+            >
+            |
+            <a
+              href="https://github.com/5xTraining/todoo-app"
+              class="text-link"
+              target="_blank"
+              >SOURCE</a
+            >
+          </p>
+        </div>
+      </header>
+  
+      <main class="px-6 todo-app main">
+        <header>
+          <nav class="navbar" v-if="isSignedIn">
+            <a class="loginLink" href="#logout" @click="userLogout" >登出</a>
+          </nav>
+          <nav class="navbar" v-else>
+            <a class="loginLink" href="#login" @click="goLogin" >登入</a>
+            <a class="signUpLink" href="#sign_up" @click="goRegister">註冊</a>
+          </nav>
+        </header>
+  
+        <section id="userSection">
+          <!-- Login Section start -->
+          <section id="loginSection" v-if="isLogin">
+            <h1>登入</h1>
+            <form id="loginForm">
+              <div class="field">
+                <label>
+                  <h3>Email</h3>
+                  <input
+                    v-model.trim="email"
+                    type="email"
+                    id="loginEmail"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="Email 信箱"
+                  />
+                </label>
+              </div>
+  
+              <div class="field">
+                <label>
+                  <h3>密碼</h3>
+                  <input
+                    v-model="password"
+                    type="password"
+                    id="loginPassword"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="密碼，至少需要 6 個字"
+                  />
+                </label>
+              </div>
+  
+              <div class="items-center justify-between block sm:flex field">
+                <button @click.prevent="userLogin">登入</button>
+                <div class="text-xl text-gray-600">
+                  還沒有帳號嗎？<a href="#" class="text-link signUpLink" @click="goRegister">註冊</a
+                  >一個吧！
+                </div>
+              </div>
+            </form>
+          </section>
+          <!-- Login Section end -->
+  
+          <!-- Sign Up Section start -->
+          <section id="signUpSection" v-if="isRegister">
+            <h1>註冊帳號</h1>
+            <form id="signUpForm">
+              <div class="field">
+                <label>
+                  <h3>Email</h3>
+                  <input
+                    v-model.trim="email"
+                    type="email"
+                    id="signUpEmail"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="Email 信箱"
+                  />
+                </label>
+              </div>
+  
+              <div class="field">
+                <label>
+                  <h3>暱稱</h3>
+                  <input
+                    v-model.trim="nickname"
+                    type="text"
+                    id="signUpNickname"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="要怎麼稱呼你呢？"
+                  />
+                </label>
+              </div>
+  
+              <div class="field">
+                <label>
+                  <h3>密碼</h3>
+                  <input
+                    v-model.trim="password"
+                    type="password"
+                    id="signUpPassword"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="密碼，至少需要 6 個字"
+                  />
+                </label>
+              </div>
+  
+              <div class="items-center justify-between block sm:flex field">
+                <button @click.prevent="userRegister">註冊</button>
+                <div class="text-xl text-gray-600">
+                  已經有帳號了？<a href="#" class="text-link loginLink" @click="goLogin">登入</a>
+                </div>
+              </div>
+            </form>
+          </section>
+          <!-- Sign Up Section end -->
+        </section>
+  
+        <!-- TODO Section start -->
+        <section id="taskSection" v-if="isTodo">
+          <form id="todoForm">
+            <input
+              @keydown.enter.prevent="addTodo" 
+              v-model.trim="todo"
+              type="text"
+              id="taskInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="做點重要的事吧..."
+            />
+            <button @click.prevent="addTodo" id="addTodoBtn">新增</button>
+          </form>
+        </section>
+        <!-- TODO Section end -->
+      </main>
+      <section class="todo-list" v-if="todoList.length > 0">
+        <ul class="items">
+          <!-- item start -->
+          <li v-for="(item, index) in todoList" :key="item.id">
+            <div class="item-content">
+              <label v-if="false">
+                <input type="text" class="modify-input" >
+              </label>
+              <label>
+                <input type="checkbox" />
+                <p class="content">{{item.content}}</p>
+              </label>
+            </div>
+            <div class="item-control">
+              <a href="#" class="edit" v-if="false"
+              ><img class="icon" src="assets/check-mark-svgrepo-com.svg"
+            /></a>
+              <a href="#" class="edit" @click="console.log(`${index}`)"
+                ><img class="icon" src="assets/pen-to-square-solid.svg"
+              /></a>
+              <a href="#" class="delete" @click="deleteTodo(item.id)"
+                ><img class="icon" src="assets/trash-can-solid.svg"
+              /></a>
+            </div>
+          </li>
+          <!-- item end -->
+        </ul>
+      </section>
+      <footer>
+        <p>
+          powered by
+          <a href="https://5xcampus.com" class="underline">5XCAMPUS</a> |
+          <a href="https://todoo.5xcamp.us" class="underline">API</a> |
+          <a href="https://github.com/5xTraining/todoo-app" class="underline"
+            >SOURCE</a
+          >
+        </p>
+      </footer>
+    </div>
+
+  </body>
+</html>
